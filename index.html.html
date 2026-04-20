@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofa 17 Birthday: The Ultimate Version</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;700;900&display=swap');
+
+        body {
+            margin: 0; padding: 0;
+            background-image: url('photo_18.jpg'); /* */
+            background-size: cover; background-position: center; background-attachment: fixed;
+            font-family: 'Montserrat', sans-serif; color: #fff; overflow-x: hidden;
+        }
+
+        /* БОКОВЫЕ ПАНЕЛИ (Выезжают при наведении) */
+        .sidebar {
+            position: fixed; top: 0; width: 15%; height: 100vh; z-index: 10;
+            background-size: cover; background-position: center; border: 3px solid #fff;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .left-eva { left: 0; background-image: url('photo_6.jpg'); transform: translateX(-20px); }
+        .left-eva:hover { transform: translateX(20px); z-index: 100; }
+        .right-bebop { right: 0; background-image: url('photo_7.jpg'); transform: translateX(20px); }
+        .right-bebop:hover { transform: translateX(-20px); z-index: 100; }
+
+        .content-wrapper {
+            max-width: 850px; margin: 0 auto; background: rgba(10, 10, 25, 0.96);
+            padding: 80px 60px; box-shadow: 0 0 120px rgba(0,0,0,1);
+            position: relative; z-index: 5; border-radius: 0 0 60px 60px; text-align: center;
+        }
+
+        h1 { font-family: 'Pacifico', cursive; font-size: 5em; color: #FCE029; text-shadow: 0 0 30px #ff79c6; margin-bottom: 0; }
+        .level-up { font-size: 2.5em; font-weight: 900; color: #ff79c6; letter-spacing: 5px; margin-bottom: 40px; }
+
+        /* Группа кнопок */
+        .btn-group { display: flex; justify-content: center; gap: 20px; margin-bottom: 50px; flex-wrap: wrap; }
+        .action-btn {
+            padding: 15px 35px; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2em;
+            color: #1a1a2e; border: 4px solid #fff; border-radius: 50px; cursor: pointer; transition: 0.3s;
+        }
+        .joy-btn { background: #ff79c6; box-shadow: 0 0 20px #ff79c6; }
+        .secret-btn { background: #FCE029; box-shadow: 0 0 20px #FCE029; }
+        .action-btn:hover { transform: scale(1.1); background: #fff; color: #000; box-shadow: 0 0 40px #fff; }
+
+        /* Фото-карточки (Увеличиваются при наведении) */
+        .story-card { display: flex; align-items: center; gap: 50px; margin: 120px 0; text-align: left; }
+        .story-card:nth-child(even) { flex-direction: row-reverse; text-align: right; }
+        .photo-frame {
+            flex-shrink: 0; width: 350px; height: 450px; border: 15px solid #fff; border-bottom: 70px solid #fff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); background: #222; transform: rotate(-2deg); transition: 0.4s;
+        }
+        .story-card:nth-child(even) .photo-frame { transform: rotate(2deg); }
+        .photo-frame:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 20; border-color: #ff79c6; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .text-content { font-size: 1.5em; line-height: 1.7; }
+        .highlight { color: #ff79c6; font-weight: 900; }
+
+        .gamedev-banner {
+            background: linear-gradient(45deg, rgba(252, 224, 41, 0.2), rgba(255, 121, 198, 0.2));
+            padding: 50px; border-radius: 40px; border: 3px dashed #FCE029; margin: 80px 0;
+        }
+
+        /* Видео-оверлей */
+        #cat-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.0); z-index: 9999; display: none; align-items: center; justify-content: center;
+            transition: background 0.5s ease;
+        }
+        #cat-overlay.active { background: rgba(0, 0, 0, 0.85); }
+        .video-container {
+            position: relative; max-width: 80%; max-height: 80%;
+            transform: scale(0.5); opacity: 0; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(252, 224, 41, 0.5); border: 5px solid #FCE029; border-radius: 15px; overflow: hidden;
+        }
+        #cat-overlay.active .video-container { transform: scale(1); opacity: 1; }
+        #cat-overlay video { width: 100%; height: 100%; object-fit: contain; }
+        .close-video {
+            position: absolute; top: -20px; right: -20px; font-size: 3em; color: #fff; cursor: pointer;
+            background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+        }
+
+        .minion-drop { position: fixed; z-index: 998; width: 100px; pointer-events: none; animation: fallAnimation linear forwards; }
+        @keyframes fallAnimation { from { top: -200px; transform: rotate(0deg); } to { top: 110vh; transform: rotate(720deg); } }
+
+        @media (max-width: 1200px) { .sidebar { display: none; } }
+    </style>
+</head>
+<body>
+
+    <audio id="joy-audio">
+        <source src="joy_sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="sidebar left-eva"></div>
+    <div class="sidebar right-bebop"></div>
+
+    <div id="cat-overlay" onclick="closeCatVideo(event)">
+        <div class="video-container">
+            <span class="close-video" onclick="closeCatVideo(event)">&times;</span>
+            <video id="cat-video" playsinline>
+                <source src="cat_kiss.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <h1>Happy Birthday, Sofa!</h1>
+        <div class="level-up">LEVEL 17 UNLOCKED</div>
+        
+        <div class="btn-group">
+            <button class="action-btn joy-btn" onclick="spawnJoy()">🚀 ПРИЗЫВ РАДОСТИ 🚀</button>
+            <button class="action-btn secret-btn" onclick="showCat()">???</button>
+        </div>
+
+        <div class="story-card">
+            <div class="photo-frame"><img src="photo_1.jpg"></div>
+            <div class="text-content">Софа! Я безумно счастлив, что жизнь (и <span class="highlight">Таня</span>!) свела нас вместе. Ты даже не представляешь, как сильно я ценю твою бесконечную поддержку и помощь. Ты — <span class="highlight">самая крутая подруга!</span></div>
+        </div>
+
+        <div class="story-card">
+            <div class="photo-frame"><img src="photo_2.jpg"></div>
+            <div class="text-content">Твоя искренность — это редкий дар. Ты именно тот человек, который умеет слушать и находить нужные слова. Я обожаю твой вайб и то, как ты умеешь быть <span class="highlight">душой компании</span>. Пусть твои 17 лет будут грандиозными! ❤️</div>
+        </div>
+
+        <div class="story-card">
+            <div class="photo-frame"><img src="photo_3.jpg"></div>
+            <div class="text-content">Желаю тебе неиссякаемого вдохновения! Я верю, что каждое твоё начинание станет шедевром. Никогда не сомневайся в себе — ты уникальна и <span class="highlight">чертовски умна</span>. Сияй, космический ковбой! ✨</div>
+        </div>
+
+        <div class="gamedev-banner">
+            <h2 style="color: #FCE029; font-size: 2.5em; margin-bottom: 20px;">🎮 THE CHOSEN ONE: GAME DEV</h2>
+            <p style="font-size: 1.6em; line-height: 1.6;">Соф, твою игру я жду больше всего на свете! Твори, кодь, создавай миры! Я всегда буду твоим самым верным <span class="highlight">бета-тестером и фанатом номер один</span>. У тебя всё получится! 🚀</p>
+        </div>
+
+        <div class="story-card">
+            <div class="photo-frame"><img src="photo_4.jpg"></div>
+            <div class="text-content">Будь по-настоящему счастлива. Пусть каждый твой день будет наполнен таким же позитивом, как эти миньоны. Иди только вперед и помни, что <span class="highlight">бананов много не бывает!</span> 🍌</div>
+        </div>
+
+        <div class="story-card">
+            <div class="photo-frame"><img src="photo_5.jpg"></div>
+            <div class="text-content">Помни: ты — главная героиня своей собственной вселенной. С днем рождения, Софа! Я всегда поддержу твои самые смелые идеи. <span class="highlight">Этот год будет легендарным!</span> ❤️</div>
+        </div>
+
+        <div style="color:#FCE029; font-size:2em; margin-top:60px; letter-spacing:8px; font-weight:900;">SEE YOU SPACE COWBOY...</div>
+
+        <div style="font-style: italic; opacity: 0.7; margin-top: 100px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 30px; font-size: 1.1em;">
+            P.S. Соф, извини, что подарок такой скромный — финансы пока поют романсы и не позволяют большего. Но я очень хотел сделать для тебя что-то уникальное своими руками. Надеюсь, ты улыбнулась! ❤️
+        </div>
+    </div>
+
+    <script>
+        function spawnJoy() {
+            // Звук при нажатии
+            const audio = document.getElementById('joy-audio');
+            audio.currentTime = 0;
+            audio.play();
+
+            // Дождь из миньонов
+            for (let i = 0; i < 150; i++) {
+                const m = document.createElement('img');
+                m.src = 'minion_rain.png';
+                m.className = 'minion-drop';
+                m.style.left = Math.random() * 95 + 'vw';
+                m.style.animationDelay = Math.random() * 4 + 's';
+                m.style.animationDuration = Math.random() * 2 + 2 + 's';
+                document.body.appendChild(m);
+                setTimeout(() => m.remove(), 6000);
+            }
+        }
+
+        function showCat() {
+            const overlay = document.getElementById('cat-overlay');
+            const video = document.getElementById('cat-video');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.classList.add('active');
+                video.play();
+            }, 10);
+        }
+
+        function closeCatVideo(event) {
+            if (event.target.id === 'cat-overlay' || event.target.className === 'close-video') {
+                const overlay = document.getElementById('cat-overlay');
+                const video = document.getElementById('cat-video');
+                overlay.classList.remove('active');
+                setTimeout(() => {
+                    video.pause();
+                    video.currentTime = 0;
+                    overlay.style.display = 'none';
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>
